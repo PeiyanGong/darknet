@@ -11,7 +11,7 @@
 #include "stb_image_write.h"
 
 int windows = 0;
-int _counter = 0;
+int _counter = 0; // first and the last lost
 
 float colors[6][3] = { {1,0,1}, {0,0,1},{0,1,1},{0,1,0},{1,1,0},{1,0,0} };
 
@@ -262,7 +262,18 @@ void draw_detections(image im, detection *dets, int num, float thresh, char **na
                 // dataset/KITTI/object/training/image_2/000001.png 2 0.998467 389 181 424 202
                 // directary, class:{1:'Pedestrian', 2:'Car', 3:'Cyclist'}, prob, left,top,right,bot
                 // coco: car, bus, truck
-                
+                if (0==strcmp(names[j],"person")){
+                    box _b = dets[i].bbox;
+                    int _left  = (_b.x-_b.w/2.)*im.w;
+                    int _right = (_b.x+_b.w/2.)*im.w;
+                    int _top   = (_b.y-_b.h/2.)*im.h;
+                    int _bot   = (_b.y+_b.h/2.)*im.h;
+                    if(_left < 0) _left = 0;
+                    if(_right > im.w-1) _right = im.w-1;
+                    if(_top < 0) _top = 0;
+                    if(_bot > im.h-1) _bot = im.h-1;
+                    fprintf(fptr,"dataset/KITTI/object/training/image_2/%06d.jpg 1 %f %d %d %d %d\n",_counter,dets[i].prob[j],_left,_top,_right,_bot);
+                }
                 if (0==strcmp(names[j],"car") ||0==strcmp(names[j],"bus")||0==strcmp(names[j],"truck")){
                     box _b = dets[i].bbox;
                     int _left  = (_b.x-_b.w/2.)*im.w;
