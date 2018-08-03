@@ -1,0 +1,1 @@
+./darknet detector_dir cfg/coco.data cfg/yolov3.cfg yolov3.weights -dir /home/vince/Documents/Mcity/DensoData/Images/ -end 321
